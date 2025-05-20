@@ -2,11 +2,11 @@
 
 **!! Warning: Documentation is not complete yet. Work in progress**
 
-This gem implements helper methods for implementing External, Prefixed
-identifiers for records.
+This gem offers helper methods for implementing external, prefixed
+identifiers for records. 
 
-Core `Exid::Coder.encode` accepts a string prefix with an UUID and
-returns an "external ID", composed of this prefix and zero-padded
+Core `Exid::Coder.encode` method accepts a string prefix with a UUID and 
+returns an "external ID," composed of prefix and a zero-padded 
 Base62-encoded UUID.
 
 For example: `prg, 018977bb-02f0-729c-8c00-2f384eccb763` => `prg_02TOxMzOS0VaLzYiS3NPd9`
@@ -21,33 +21,29 @@ See more:
 
 ## Usage
 
-Add a UUID or (preferably) UUIDv7 to your model include a helper module. Pass a
+Add a UUID or (preferably) UUIDv7 field to your model and include a helper module. Pass a
 prefix (String) and a field name (Symbol) to the `Exid::Record.new` method.
 
 ```ruby
 class User < ApplicationRecord
   include Exid::Record.new("user", :uuid)
 
-  # Optional, but recommended. Use the Exid value as the primary object
+  # Optional, but recommended. Use the external ID value as the primary object
   # identier.
 
   def to_param = exid_value
 end
 ```
-
-That's all. This will add certain class and instance methods to your object.
+That's all. This will add certain class and instance methods to your models / classes.
 
 ```ruby
 user = User.create!(uuid: "018977bb-02f0-729c-8c00-2f384eccb763")
 ```
-
 Following methods are now available on the instance class.
 
 ```ruby
 user.exid_value # => "user_02TOxMzOS0VaLzYiS3NPd9"
-
 user.exid_prefix_name # => "user"
-
 user.exid_field # => :uuid
 ```
 
@@ -60,7 +56,6 @@ N characters.
 
 ```ruby
 user.exid_handle # => "OBtqZqRhLm"
-
 user.exid_handle(6) # => "ZqRhLm"
 ```
 
