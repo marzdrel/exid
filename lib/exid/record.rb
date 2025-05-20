@@ -5,7 +5,7 @@ module Exid
     Entry =
       Data.define(:prefix, :field, :klass) do
         def ==(other) = prefix == other.prefix
-        delegate :hash, to: :prefix
+        def hash = prefix.hash
 
         alias_method :eql?, :==
       end
@@ -49,6 +49,12 @@ module Exid
       end
     end
 
+    def self.unload
+      MUTEX.synchronize do
+        @registered_modules = Set.new
+      end
+    end
+
     def self.registered_modules
       MUTEX.synchronize do
         @registered_modules.dup
@@ -56,11 +62,12 @@ module Exid
     end
 
     def self.find_module(prefix)
-      registered_modules.detect_by!(prefix:)
+      registered_modules.detect { it.prefix == prefix } or
+        raise Error, "Model for \"#{prefix}\" not found"
     end
 
     def self.finder(eid)
-      PrefixEid.decode(eid) => prefix, value
+      Coder.decode(eid) => prefix, value
 
       mod = find_module(prefix)
       mod.klass.where(mod.field => value)
@@ -74,7 +81,7 @@ module Exid
     def build_module_value(prefix, field)
       Module.new do
         define_method :prefix_eid_value do
-          PrefixEid.encode(prefix, send(field))
+          Coder.encode(prefix, send(field))
         end
 
         # This is used to visually distingquish records on index pages. First
@@ -83,7 +90,7 @@ module Exid
         # display only, do not use this to fetch records, etc.
 
         define_method :prefix_eid_handle do
-          prefix_eid_value.split("_").last.last(10)
+          prefix_eid_value.split("_").last[-10..-1]
         end
       end
     end
@@ -103,7 +110,7 @@ module Exid
     def build_module_static(prefix, field)
       Module.new do
         define_method :prefix_eid_loader do |eid|
-          PrefixEid.decode(eid) => ^prefix, value
+          Coder.decode(eid) => ^prefix, value
           find_sole_by(field => value)
         end
       end

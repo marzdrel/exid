@@ -6,6 +6,7 @@ module Exid
   class Error < StandardError; end
 end
 
+require "forwardable"
 require "zeitwerk"
 
 loader = Zeitwerk::Loader.for_gem
