@@ -2,12 +2,8 @@
 
 **!! Warning: Documentation is not complete yet. Work in progress**
 
-This gem offers helper methods for implementing external, prefixed
-identifiers for records. 
-
-Core `Exid::Coder.encode` method accepts a string prefix with a UUID and 
-returns an "external ID," composed of prefix and a zero-padded 
-Base62-encoded UUID.
+This gem offers helper methods for implementing external, prefixed identifiers for records. Core `Exid::Coder.encode` method accepts a string prefix with a UUID and 
+returns an "external ID," composed of prefix and a zero-padded **Base62-encoded UUID**.
 
 For example: `prg, 018977bb-02f0-729c-8c00-2f384eccb763` => `prg_02TOxMzOS0VaLzYiS3NPd9`
 
