@@ -35,7 +35,7 @@ That's all. This will add certain class and instance methods to your models / cl
 ```ruby
 user = User.create!(uuid: "018977bb-02f0-729c-8c00-2f384eccb763")
 ```
-Following methods are now available on the instance class.
+Following methods are now available on the class instance.
 
 ```ruby
 user.exid_value # => "user_02TOxMzOS0VaLzYiS3NPd9"
