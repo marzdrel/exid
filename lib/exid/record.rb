@@ -20,8 +20,8 @@ module Exid
 
       self.class.register_module(
         Entry.new(
-          prefix: base.prefix_eid_prefix_name,
-          field: base.prefix_eid_field,
+          prefix: base.exid_prefix_name,
+          field: base.exid_field,
           klass: base,
         ),
       )
@@ -80,7 +80,7 @@ module Exid
 
     def build_module_value(prefix, field)
       Module.new do
-        define_method :prefix_eid_value do
+        define_method :exid_value do
           Coder.encode(prefix, send(field))
         end
 
@@ -89,19 +89,19 @@ module Exid
         # last bytes of encoded of UUID7 is more likely to be unique. This for
         # display only, do not use this to fetch records, etc.
 
-        define_method :prefix_eid_handle do |amount = 10|
-          prefix_eid_value.split("_").last[-amount..-1]
+        define_method :exid_handle do |amount = 10|
+          exid_value.split("_").last[-amount..-1]
         end
       end
     end
 
     def build_module_shared(prefix, field)
       Module.new do
-        define_method :prefix_eid_prefix_name do
+        define_method :exid_prefix_name do
           prefix
         end
 
-        define_method :prefix_eid_field do
+        define_method :exid_field do
           field
         end
       end
@@ -109,7 +109,7 @@ module Exid
 
     def build_module_static(prefix, field)
       Module.new do
-        define_method :prefix_eid_loader do |eid|
+        define_method :exid_loader do |eid|
           Coder.decode(eid) => ^prefix, value
           find_sole_by(field => value)
         end

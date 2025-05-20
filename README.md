@@ -31,7 +31,7 @@ class User < ApplicationRecord
   # Optional, but recommended. Use the Exid value as the primary object
   # identier.
 
-  def to_param = prefix_eid_value
+  def to_param = exid_value
 end
 ```
 
@@ -44,14 +44,14 @@ user = User.create!(uuid: "018977bb-02f0-729c-8c00-2f384eccb763")
 Following methods are now available on the instance class.
 
 ```ruby
-user.prefix_eid_value # => "user_02TOxMzOS0VaLzYiS3NPd9"
+user.exid_value # => "user_02TOxMzOS0VaLzYiS3NPd9"
 
-user.prefix_eid_prefix_name # => "user"
+user.exid_prefix_name # => "user"
 
-user.prefix_eid_field # => :uuid
+user.exid_field # => :uuid
 ```
 
-The `prefix_eid_handle` instanec method simply returns last 10 characters of
+The `exid_handle` instanec method simply returns last 10 characters of
 identifier. This might be useful for displaying in the UI as distinguishing
 identifier.  If the UUID7 is used as the identifier, the first few characters
 are not random. They come from the timestamp, so they will be the same for most
@@ -59,9 +59,9 @@ objects created at the same time. Pass integer as the argument to get the last
 N characters.
 
 ```ruby
-user.prefix_eid_handle # => "OBtqZqRhLm"
+user.exid_handle # => "OBtqZqRhLm"
 
-user.prefix_eid_handle(6) # => "ZqRhLm"
+user.exid_handle(6) # => "ZqRhLm"
 ```
 
 The `Exid::Record` also offers couple of instance methods designed load

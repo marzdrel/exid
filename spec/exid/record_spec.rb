@@ -26,16 +26,16 @@ module Exid
 
       model = Klass.new
 
-      expect(model.prefix_eid_value)
+      expect(model.exid_value)
         .to eq("pref_02ZY58Nm39UWOBtqZqRhLm")
 
-      expect(model.prefix_eid_prefix_name)
+      expect(model.exid_prefix_name)
         .to eq("pref")
 
-      expect(model.prefix_eid_field)
+      expect(model.exid_field)
         .to eq(:uuid)
 
-      expect(model.prefix_eid_handle)
+      expect(model.exid_handle)
         .to eq("OBtqZqRhLm")
     end
 
@@ -57,7 +57,7 @@ module Exid
 
       model = Klass.new
 
-      instance = Klass.prefix_eid_loader("pref_02WoeojY8dqVYcAhs321rm")
+      instance = Klass.exid_loader("pref_02WoeojY8dqVYcAhs321rm")
 
       expect(instance).to eq(:record)
     end
@@ -73,7 +73,7 @@ module Exid
       )
 
       code = proc do
-        Klass.prefix_eid_loader("unkn_02WoeojY8dqVYcAhs321rm")
+        Klass.exid_loader("unkn_02WoeojY8dqVYcAhs321rm")
       end
 
       expect { code.call }
