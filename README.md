@@ -1,43 +1,84 @@
 # Exid
 
-TODO: Delete this and the text below, and describe your gem
+**!! Warning: Documentation is not complete yet. Work in progress**
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/exid`. To experiment with that code, run `bin/console` for an interactive prompt.
+This gem implements helper methods for implementing External, Prefixed
+identifiers for records.
 
-## Installation
+Core `Exid::Coder.encode` accepts a string prefix with an UUID and
+returns an "external ID", composed of this prefix and zero-padded
+Base62-encoded UUID.
 
-TODO: Replace `UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG` with your gem name right after releasing it to RubyGems.org. Please do not do it earlier due to security reasons. Alternatively, replace this section with instructions to install your gem from git if you don't plan to release to RubyGems.org.
+For example: `prg, 018977bb-02f0-729c-8c00-2f384eccb763` => `prg_02TOxMzOS0VaLzYiS3NPd9`
 
-Install the gem and add to the application's Gemfile by executing:
-
-```bash
-bundle add UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
-```
-
-If bundler is not being used to manage dependencies, install the gem by executing:
-
-```bash
-gem install UPDATE_WITH_YOUR_GEM_NAME_IMMEDIATELY_AFTER_RELEASE_TO_RUBYGEMS_ORG
-```
+See more:
+  - https://dev.to/stripe/designing-apis-for-humans-object-ids-3o5a
+  - https://danschultzer.com/posts/prefixed-base62-uuidv7-object-ids-with-ecto
+  - https://dev.to/drnic/friendly-ids-for-ruby-on-rails-1c8p
+  - https://github.com/excid3/prefixed_ids
+  - https://github.com/sprql/uuid7-ruby
+  - https://github.com/steventen/base62-rb
 
 ## Usage
 
-TODO: Write usage instructions here
+Add a UUID or (preferably) UUIDv7 to your model include a helper module. Pass a
+prefix (String) and a field name (Symbol) to the `Exid::Record.new` method.
 
-## Development
+```ruby
+class User < ApplicationRecord
+  include Exid::Record.new("user", :uuid)
 
-After checking out the repo, run `bin/setup` to install dependencies. Then, run `rake spec` to run the tests. You can also run `bin/console` for an interactive prompt that will allow you to experiment.
+  # Optional, but recommended. Use the Exid value as the primary object
+  # identier.
 
-To install this gem onto your local machine, run `bundle exec rake install`. To release a new version, update the version number in `version.rb`, and then run `bundle exec rake release`, which will create a git tag for the version, push git commits and the created tag, and push the `.gem` file to [rubygems.org](https://rubygems.org).
+  def to_param = prefix_eid_value
+end
+```
 
-## Contributing
+That's all. This will add certain class and instance methods to your object.
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/exid. This project is intended to be a safe, welcoming space for collaboration, and contributors are expected to adhere to the [code of conduct](https://github.com/[USERNAME]/exid/blob/main/CODE_OF_CONDUCT.md).
+```ruby
+user = User.create!(uuid: "018977bb-02f0-729c-8c00-2f384eccb763")
+```
+
+Following methods are now available on the instance class.
+
+```ruby
+user.prefix_eid_value # => "user_02TOxMzOS0VaLzYiS3NPd9"
+
+user.prefix_eid_prefix_name # => "user"
+
+user.prefix_eid_field # => :uuid
+```
+
+The `prefix_eid_handle` instanec method simply returns last 10 characters of
+identifier. This might be useful for displaying in the UI as distinguishing
+identifier.  If the UUID7 is used as the identifier, the first few characters
+are not random. They come from the timestamp, so they will be the same for most
+objects created at the same time. Pass integer as the argument to get the last
+N characters.
+
+```ruby
+user.prefix_eid_handle # => "OBtqZqRhLm"
+
+user.prefix_eid_handle(6) # => "ZqRhLm"
+```
+
+The `Exid::Record` also offers couple of instance methods designed load
+records. This is another way to mimic Rails `GlobalID`. Warning: Steer
+away from using this as default way to load records using user supplied
+identifiers. User might replace the identifier with other record which might
+lead to unexpected results and security issues.
+
+The `fetch` class method will return the record or nil if not found. The
+`fetch!` variant will use Rails 7.1+ `sole` under the hood and raise an
+exception if the record is not found (or if more than one record is found).
+
+```ruby
+Exid::Record.fetch!("pref_02WoeojY8dqVYcAhs321rm")
+Exid::Record.fetch("pref_02WoeojY8dqVYcAhs321rm")
+```
 
 ## License
 
 The gem is available as open source under the terms of the [MIT License](https://opensource.org/licenses/MIT).
-
-## Code of Conduct
-
-Everyone interacting in the Exid project's codebases, issue trackers, chat rooms and mailing lists is expected to follow the [code of conduct](https://github.com/[USERNAME]/exid/blob/main/CODE_OF_CONDUCT.md).

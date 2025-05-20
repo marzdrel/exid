@@ -89,8 +89,8 @@ module Exid
         # last bytes of encoded of UUID7 is more likely to be unique. This for
         # display only, do not use this to fetch records, etc.
 
-        define_method :prefix_eid_handle do
-          prefix_eid_value.split("_").last[-10..-1]
+        define_method :prefix_eid_handle do |amount = 10|
+          prefix_eid_value.split("_").last[-amount..-1]
         end
       end
     end
