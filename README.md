@@ -51,7 +51,7 @@ user.exid_prefix_name # => "user"
 user.exid_field # => :uuid
 ```
 
-The `exid_handle` instanec method simply returns last 10 characters of
+The `exid_handle` instance method simply returns last 10 characters of
 identifier. This might be useful for displaying in the UI as distinguishing
 identifier.  If the UUID7 is used as the identifier, the first few characters
 are not random. They come from the timestamp, so they will be the same for most
@@ -64,7 +64,12 @@ user.exid_handle # => "OBtqZqRhLm"
 user.exid_handle(6) # => "ZqRhLm"
 ```
 
-The `Exid::Record` also offers couple of instance methods designed load
+Use the class method `exid_loader`, for example `User.exid_loader`, to load the record
+using external ID. This method will raise `ActiveRecord::RecordNotFound` if the record
+not found. Warning: The method will raise `NoMatchingPatternError` if the provided
+identifier is not valid.
+
+The `Exid::Record` also offers couple of class methods designed load
 records. This is another way to mimic Rails `GlobalID`. Warning: Steer
 away from using this as default way to load records using user supplied
 identifiers. User might replace the identifier with other record which might
@@ -78,6 +83,11 @@ exception if the record is not found (or if more than one record is found).
 Exid::Record.fetch!("pref_02WoeojY8dqVYcAhs321rm")
 Exid::Record.fetch("pref_02WoeojY8dqVYcAhs321rm")
 ```
+
+Note: When using this gem in Rails with Development (with `eager_load` set to `false`), the
+class has to be referenced before calling `.fetch` or `.fetch!`. Prefix needs to be
+added to the global registry, so the loader can identify which class is tied to
+the prefix.
 
 ## License
 
