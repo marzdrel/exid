@@ -60,7 +60,7 @@ using external ID. This method will raise `ActiveRecord::RecordNotFound` if the 
 not found. Warning: The method will raise `NoMatchingPatternError` if the provided
 identifier is not valid.
 
-The `Exid::Record` also offers couple of class methods designed load
+The `Exid::Record` also offers couple of class methods to load
 records. This is another way to mimic Rails `GlobalID`. Warning: Steer
 away from using this as default way to load records using user supplied
 identifiers. User might replace the identifier with other record which might
