@@ -1,4 +1,4 @@
-# Exid
+# Exid ![CI](https://github.com/marzdrel/exid/actions/workflows/ci.yml/badge.svg)
 
 A Ruby gem for implementing human-friendly, prefixed identifiers for records using Base62-encoded UUIDs.
 
