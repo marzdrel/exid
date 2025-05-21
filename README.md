@@ -4,9 +4,20 @@ A Ruby gem for implementing human-friendly, prefixed identifiers for records usi
 
 ## Overview
 
-Exid provides helper methods to create external, prefixed identifiers for your records. The core `Exid::Coder.encode` method accepts a string prefix with a UUID and returns an "external ID" composed of the prefix and a zero-padded **Base62-encoded UUID**.
+Exid provides helper methods to create external, prefixed identifiers for your records, following the pattern popularized by Stripe's API.
 
-For example: 
+Similar to Stripe's IDs (like `cus_12345` for customers or `prod_67890` for products), Exid generates readable, prefixed identifiers that:
+
+- Are human-friendly and can be safely exposed in URLs
+- Contain semantic prefixes that indicate resource type
+- Hide internal database IDs
+- Maintain global uniqueness
+- Are collision-resistant
+- Have constant length for a consistent user experience
+
+The core `Exid::Coder.encode` method accepts a string prefix with a UUID and returns an "external ID" composed of the prefix and a zero-padded **Base62-encoded UUID**.
+
+For example:
 ```
 prg, 018977bb-02f0-729c-8c00-2f384eccb763 => prg_02TOxMzOS0VaLzYiS3NPd9
 ```
@@ -76,7 +87,7 @@ user.exid_handle(6) # => "ZqRhLm"
 Use the class method `exid_loader` to load a record using its external ID:
 
 ```ruby
-User.exid_loader("user_02TOxMzOS0VaLzYiS3NPd9") 
+User.exid_loader("user_02TOxMzOS0VaLzYiS3NPd9")
 # Raises ActiveRecord::RecordNotFound if not found
 # Raises NoMatchingPatternError if ID format is invalid
 ```
