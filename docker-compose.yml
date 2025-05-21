@@ -1,0 +1,20 @@
+---
+name: exid
+
+x-llm: &llm
+  build:
+    context: .
+    dockerfile: Dockerfile
+    target: node-base
+  image: claude
+  tmpfs:
+    - /tmp:mode=1777
+  volumes:
+    - .:/app
+    - ~/.claude.json:/root/.claude.json
+
+services:
+  claude:
+    <<: *llm
+    stdin_open: true
+    tty: true
