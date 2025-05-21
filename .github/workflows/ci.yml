@@ -9,6 +9,10 @@ on:
 jobs:
   test:
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        ruby: ['3.2', '3.3', '3.4']
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -16,8 +20,10 @@ jobs:
       - name: Set up Ruby
         uses: ruby/setup-ruby@v1
         with:
-          ruby-version: .ruby-version
+          ruby-version: ${{ matrix.ruby }}
+          bundler: default
           bundler-cache: true
+          rubygems: latest
 
       - name: Run tests
         run: bin/rspec
