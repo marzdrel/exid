@@ -14,14 +14,13 @@ module Exid
     end
 
     it "generates helper methods for a record" do
-
       stub_const(
         "Klass",
         Class.new do
           include Exid::Record.new("pref", :uuid)
 
           def uuid = "0196eef2-ba84-7105-bd1a-a36e0eaf1714"
-        end,
+        end
       )
 
       model = Klass.new
@@ -52,7 +51,7 @@ module Exid
           def self.find_sole_by(_field)
             :record
           end
-        end,
+        end
       )
 
       instance = Klass.exid_loader("pref_02WoeojY8dqVYcAhs321rm")
@@ -67,7 +66,7 @@ module Exid
           include Exid::Record.new("pref", :uuid)
 
           def uuid = "0196eef2-ba84-7105-bd1a-a36e0eaf1714"
-        end,
+        end
       )
 
       code = proc do
@@ -85,13 +84,13 @@ module Exid
           include Exid::Record.new("pref", :uuid)
 
           def uuid = "018f1a83-81c3-7d82-9989-cf2cefba6a84"
-        end,
+        end
       )
 
       entry =
         described_class
-        .registered_modules
-        .detect { _1.klass == Klass }
+          .registered_modules
+          .detect { _1.klass == Klass }
 
       expect(entry.prefix).to eq("pref")
     end
@@ -104,7 +103,7 @@ module Exid
             include Exid::Record.new("pref", :uuid)
 
             def uuid = "018f1a83-81c3-7d82-9989-cf2cefba6a84"
-          end,
+          end
         )
 
         allow(Klass)
@@ -124,7 +123,7 @@ module Exid
             include Exid::Record.new("pref", :uuid)
 
             def self.where(...) = []
-          end,
+          end
         )
 
         value = described_class.fetch("pref_02WoeojY8dqVYcAhs321rm")

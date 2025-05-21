@@ -33,7 +33,7 @@ module Exid
     def self.encode(prefix, uuid)
       [
         prefix.to_s,
-        Base62.encode(uuid.delete("-").hex),
+        Base62.encode(uuid.delete("-").hex)
       ].join("_")
     end
 
@@ -48,7 +48,7 @@ module Exid
 
       Result.new(
         prefix,
-        [hex[0..7], hex[8..11], hex[12..15], hex[16..19], hex[20..31]].join("-"),
+        [hex[0..7], hex[8..11], hex[12..15], hex[16..19], hex[20..31]].join("-")
       )
     end
   end

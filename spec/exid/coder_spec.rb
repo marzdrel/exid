@@ -8,7 +8,7 @@ module Exid
       it "encodes EID" do
         eid =
           described_class
-          .encode("vhr", "018977bb-02f0-729c-8c00-2f384eccb763")
+            .encode("vhr", "018977bb-02f0-729c-8c00-2f384eccb763")
 
         expect(eid)
           .to eq "vhr_02TOxMzOS0VaLzYiS3NPd9"

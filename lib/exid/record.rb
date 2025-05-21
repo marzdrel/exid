@@ -5,6 +5,7 @@ module Exid
     Entry =
       Data.define(:prefix, :field, :klass) do
         def ==(other) = prefix == other.prefix
+
         def hash = prefix.hash
 
         alias_method :eql?, :==
@@ -22,8 +23,8 @@ module Exid
         Entry.new(
           prefix: base.exid_prefix_name,
           field: base.exid_field,
-          klass: base,
-        ),
+          klass: base
+        )
       )
     end
 
@@ -74,6 +75,7 @@ module Exid
     end
 
     def self.fetch(eid) = finder(eid).first
+
     def self.fetch!(eid) = finder(eid).sole
 
     private
