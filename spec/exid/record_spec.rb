@@ -49,13 +49,11 @@ module Exid
             "0196eef2-ba84-7105-bd1a-a36e0eaf1714"
           end
 
-          def self.find_sole_by(field)
+          def self.find_sole_by(_field)
             :record
           end
         end,
       )
-
-      model = Klass.new
 
       instance = Klass.exid_loader("pref_02WoeojY8dqVYcAhs321rm")
 
