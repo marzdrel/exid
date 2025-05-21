@@ -13,10 +13,10 @@ module Exid
     @registered_modules = Set.new
 
     def included(base)
-      base.send(:include, @module_value)
-      base.send(:include, @module_shared)
-      base.send(:extend, @module_shared)
-      base.send(:extend, @module_static)
+      base.public_send(:include, @module_value)
+      base.public_send(:include, @module_shared)
+      base.public_send(:extend, @module_shared)
+      base.public_send(:extend, @module_static)
 
       self.class.register_module(
         Entry.new(
@@ -62,7 +62,7 @@ module Exid
     end
 
     def self.find_module(prefix)
-      registered_modules.detect { it.prefix == prefix } or
+      registered_modules.detect { _1.prefix == prefix } or
         raise Error, "Model for \"#{prefix}\" not found"
     end
 
@@ -90,7 +90,7 @@ module Exid
         # display only, do not use this to fetch records, etc.
 
         define_method :exid_handle do |amount = 10|
-          exid_value.split("_").last[-amount..-1]
+          exid_value.split("_").last[-amount..]
         end
       end
     end
