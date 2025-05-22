@@ -1,4 +1,3 @@
----
 name: CI
 
 on:
@@ -10,27 +9,51 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false # Keep running other jobs even if one fails
       matrix:
-        ruby: ["3.2", "3.3", "3.4"]
+        ruby: ["3.1", "3.2", "3.3"]
+        # Define Rails versions to test against. Empty string means test with latest compatible.
+        rails_version: ['6.0', '6.1', '7.0', '7.1', ''] 
+        exclude:
+          - ruby: "3.3"
+            rails_version: "6.0"
+          - ruby: "3.3"
+            rails_version: "6.1"
 
     steps:
       - uses: actions/checkout@v4
-      - uses: ruby/setup-ruby@v1
+
+      - name: Set up Ruby
+        uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ matrix.ruby }}
-          bundler: default
-          bundler-cache: true
-          rubygems: latest
+          bundler-cache: true # This will run `bundle install`
 
-      - run: bin/rspec
+      - name: Force Rails Version
+        if: ${{ matrix.rails_version != '' }}
+        run: |
+          echo "Forcing Rails version ${{ matrix.rails_version }}"
+          # Remove existing Gemfile.lock, if any, to allow re-resolving dependencies
+          rm -f Gemfile.lock
+          # Add the specific version of Rails. This will be written to Gemfile.
+          # Bundler will then resolve this specific version.
+          # Using --git or --path for the gem might require different bundle add flags.
+          # Assuming 'exid' gem is either published or path is correctly set in Gemfile for local dev.
+          bundle add rails --version "${{ matrix.rails_version }}" --skip-install
+          # Re-run bundle install to update Gemfile.lock and install the correct Rails version
+          bundle install
 
-  standardrb:
+      - name: Run tests
+        run: bin/rspec
+
+  standardrb: # Keep your standardrb job as is
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v2 # Note: uses v2, consider updating to v4 if compatible
       - uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-          ruby-version: "3.2"
+          ruby-version: "3.2" # Or your project's primary Ruby version
 
       - run: bin/standardrb
+```
