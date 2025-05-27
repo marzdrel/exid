@@ -14,7 +14,7 @@ x-llm: &llm
     - ~/.claude.json:/root/.claude.json
 
 services:
-  claude:
+  ai:
     <<: *llm
     stdin_open: true
     tty: true

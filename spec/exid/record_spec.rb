@@ -90,7 +90,7 @@ module Exid
       entry =
         described_class
           .registered_modules
-          .detect { _1.klass == Klass }
+          .detect { it.klass == Klass }
 
       expect(entry.prefix).to eq("pref")
     end

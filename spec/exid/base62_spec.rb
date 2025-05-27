@@ -23,6 +23,18 @@ module Exid
     end
 
     describe "#decode" do
+      it "raises readable error on invalid string" do
+        code = proc do
+          described_class.decode("this_is_not_valid!!")
+        end
+
+        expect { code.call }
+          .to raise_error(
+            Exid::Error,
+            "Invalid character '_' in string 'this_is_not_valid!!'"
+          )
+      end
+
       it "decodes 128-bit number" do
         number = described_class.decode("7N42dgm5tFLK9N8MT7fHC7")
 

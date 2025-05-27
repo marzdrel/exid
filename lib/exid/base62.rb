@@ -2,6 +2,8 @@
 
 module Exid
   class Base62
+    class DecodeError < Error; end
+
     CHARS = "0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
     BASE = CHARS.length
     CHARS_HASH = CHARS.each_char.zip(0...BASE).to_h
@@ -22,7 +24,13 @@ module Exid
     def self.decode(str)
       max = str.length - 1
       str.each_char.zip(0..max).reduce(0) do |acc, (char, index)|
-        acc + (CHARS_HASH[char] * (BASE**(max - index)))
+        character = CHARS_HASH[char]
+
+        if character.nil?
+          raise DecodeError, "Invalid character '#{char}' in string '#{str}'"
+        end
+
+        acc + (character * (BASE**(max - index)))
       end
     end
   end
