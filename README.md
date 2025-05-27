@@ -96,7 +96,7 @@ The `Exid::Record` module also provides global loading methods that mimic Rails 
 
 ```ruby
 Exid::Record.fetch!("pref_02WoeojY8dqVYcAhs321rm") # Raises exception if not found
-Exid::Record.fetch("pref_02WoeojY8dqVYcAhs321rm")   # Returns nil if not found
+Exid::Record.fetch("pref_02WoeojY8dqVYcAhs321rm")  # Returns `nil` if not found
 ```
 
 > **⚠️ Security Warning**: Exercise caution when using global loading methods with user-supplied identifiers, as this could lead to unexpected results or security issues if users substitute identifiers.
