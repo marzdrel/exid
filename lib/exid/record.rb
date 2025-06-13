@@ -63,7 +63,7 @@ module Exid
     end
 
     def self.find_module(prefix)
-      registered_modules.detect { it.prefix == prefix } or
+      registered_modules.detect { _1.prefix == prefix } or
         raise Error, "Model for \"#{prefix}\" not found"
     end
 
