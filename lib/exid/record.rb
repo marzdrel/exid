@@ -29,7 +29,7 @@ module Exid
     end
 
     def initialize(prefix, field)
-      raise Error, "Prefix cannot be longer than 4 characters" if prefix.length > 4
+      Exid.configuration.validate_prefix(prefix)
 
       @module_static = build_module_static(prefix, field)
       @module_value = build_module_value(prefix, field)

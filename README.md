@@ -82,6 +82,19 @@ user.exid_handle # => "OBtqZqRhLm"
 user.exid_handle(6) # => "ZqRhLm"
 ```
 
+### Configuration
+
+You can configure Exid's prefix validation at the application level. Create an initializer (e.g., `config/initializers/exid.rb` in Rails):
+
+By default, prefixes are limited to 4 characters. You can provide a custom validator proc that returns `true` if the prefix is valid, `false` otherwise:
+
+```ruby
+Exid.configure do |config|
+  config.prefix_validator = proc { it.match?(/\A[a-z]{2,6}\z/) }
+end
+```
+**Note**: When you set a custom `prefix_validator`, it replaces the default 4-character length validation. Your validator has full control over validation logic.
+
 ### Loading Records by External ID
 
 Use the class method `exid_loader` to load a record using its external ID:
