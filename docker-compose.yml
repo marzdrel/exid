@@ -12,9 +12,3 @@ x-llm: &llm
   volumes:
     - .:/app
     - ~/.claude.json:/root/.claude.json
-
-services:
-  ai:
-    <<: *llm
-    stdin_open: true
-    tty: true
