@@ -17,7 +17,7 @@ module Exid
     private
 
     def default_validator
-      proc { it.length <= 4 }
+      proc { |prefix| prefix.length <= 4 }
     end
   end
 
