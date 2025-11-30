@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    exid (0.2.1)
+    exid (0.2.2)
       zeitwerk (~> 2.6)
 
 GEM
