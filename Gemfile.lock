@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    exid (0.2.3)
+    exid (0.3.0)
       zeitwerk (~> 2.6)
 
 GEM
@@ -67,7 +67,7 @@ GEM
       rubocop-performance (~> 1.25.0)
     unicode-display_width (3.1.4)
       unicode-emoji (~> 4.0, >= 4.0.4)
-    unicode-emoji (4.0.4)
+    unicode-emoji (4.2.0)
     zeitwerk (2.6.18)
 
 PLATFORMS

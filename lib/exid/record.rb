@@ -3,7 +3,9 @@ module Exid
     MUTEX = Mutex.new
 
     Entry =
-      Data.define(:prefix, :field, :klass) do
+      Data.define(:prefixes, :field, :klass) do
+        def prefix = prefixes.first
+
         def ==(other) = prefix == other.prefix
 
         def hash = prefix.hash
@@ -21,19 +23,25 @@ module Exid
 
       self.class.register_module(
         Entry.new(
-          prefix: base.exid_prefix_name,
+          prefixes: base.exid_prefix_names,
           field: base.exid_field,
           klass: base
         )
       )
     end
 
-    def initialize(prefix, field)
-      Exid.configuration.validate_prefix(prefix)
+    # The prefix can be a single String or an Array of Strings. The first
+    # prefix is the canonical one, used to generate external IDs. Any
+    # additional prefixes are treated as aliases and are only used to locate
+    # records. This allows renaming a prefix without breaking existing IDs.
 
-      @module_static = build_module_static(prefix, field)
-      @module_value = build_module_value(prefix, field)
-      @module_shared = build_module_shared(prefix, field)
+    def initialize(prefix, field)
+      prefixes = Array(prefix)
+      prefixes.each { |item| Exid.configuration.validate_prefix(item) }
+
+      @module_static = build_module_static(prefixes, field)
+      @module_value = build_module_value(prefixes.first, field)
+      @module_shared = build_module_shared(prefixes, field)
 
       super()
     end
@@ -63,7 +71,7 @@ module Exid
     end
 
     def self.find_module(prefix)
-      registered_modules.detect { _1.prefix == prefix } or
+      registered_modules.detect { _1.prefixes.include?(prefix) } or
         raise Error, "Model for \"#{prefix}\" not found"
     end
 
@@ -97,10 +105,14 @@ module Exid
       end
     end
 
-    def build_module_shared(prefix, field)
+    def build_module_shared(prefixes, field)
       Module.new do
         define_method :exid_prefix_name do
-          prefix
+          prefixes.first
+        end
+
+        define_method :exid_prefix_names do
+          prefixes
         end
 
         define_method :exid_field do
@@ -109,10 +121,11 @@ module Exid
       end
     end
 
-    def build_module_static(prefix, field)
+    def build_module_static(prefixes, field)
       Module.new do
         define_method :exid_loader do |eid|
-          Coder.decode(eid) => ^prefix, value
+          Coder.decode(eid) => prefix, value
+          prefixes.include?(prefix) or raise NoMatchingPatternError
           find_sole_by(field => value)
         end
       end
